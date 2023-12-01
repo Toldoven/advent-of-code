@@ -13,3 +13,5 @@ local.properties
 
 # Initial safeguard for storing inputs.
 inputs/aockt/y*/d*/**
+
+.session
