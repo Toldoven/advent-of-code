@@ -84,8 +84,9 @@ fun now() = LocalDateTime.now(
     ZoneId.of("America/New_York")
 )
 
-fun initDay(year: Int, day: Int) {
+fun fetchInput(year: Int, day: Int) {
     val session = project.extra["session"]
+
     val input = URL("https://adventofcode.com/$year/day/$day/input")
         .openConnection()
         .let { it as HttpURLConnection }
@@ -96,16 +97,25 @@ fun initDay(year: Int, day: Int) {
         .getInputStream()
         .bufferedReader()
         .readText()
+
     val paddedDay = day.toString().padStart(2, '0')
 
     val inputFile = file("inputs/aockt/y$year/d$paddedDay/input.txt")
 
     inputFile.apply { parentFile.mkdirs() }.writeText(input)
+}
+
+fun initDay(year: Int, day: Int, fetchInput: Boolean = true) {
+
+    if (fetchInput) fetchInput(year, day)
+
+    val paddedDay = day.toString().padStart(2, '0')
 
     val solutionClass = "Y${year}D${paddedDay}"
     val testClass = solutionClass + "Test"
 
     val solutionFile = file("solutions/aockt/y$year/${solutionClass}.kt")
+    val testFile = file("tests/aockt/y$year/${testClass}.kt")
 
     solutionFile
         .takeUnless { it.isFile }
@@ -117,12 +127,10 @@ fun initDay(year: Int, day: Int) {
     
             object $solutionClass : Solution {
                 override fun partOne(input: String): Any {
-                    
+                    return 0
                 }
             }
         """.trimIndent())
-
-    val testFile = file("tests/aockt/y$year/${solutionClass}.kt")
 
     testFile
         .takeUnless { it.isFile }
@@ -138,17 +146,19 @@ fun initDay(year: Int, day: Int) {
                 partOne {
                 
                 }
+                
+                partTwo {
+                
+                }
             })
         """.trimIndent())
 
     println("""
-        ----------------------------------------
-        Advent of Code: Day $day, Year $year
-        Solution: $solutionFile
-        Tests: $testFile
-        Input: $inputFile
-        Happy hacking
-        ----------------------------------------
+        ─────────────────────────────────────────────
+        Year $year, Day $day
+        $solutionFile
+        $testFile
+        ─────────────────────────────────────────────
     """.trimIndent())
 }
 
@@ -170,7 +180,7 @@ tasks.register("setupSession") {
     }
 }
 
-fun aocDateTimeForYear(year: Int) = LocalDateTime.of(year, Month.DECEMBER, 1, 0, 0)
+fun aocDateTimeForYear(year: Int): LocalDateTime = LocalDateTime.of(year, Month.DECEMBER, 1, 0, 0)
 
 fun Duration.pretty(): String {
     val months = toDays() / 30
@@ -205,6 +215,23 @@ tasks.register("initToday") {
         }
         val year = now.year
         initDay(year, day)
+    }
+}
+
+tasks.register("initTomorrow") {
+    group = "adventofcode"
+    doLast {
+        val now = now().plusDays(1)
+        val day = now.dayOfMonth
+        if (now.month != Month.DECEMBER || day < 1 || day > 25) {
+            val nextAoc = aocDateTimeForYear(now.year)
+                .takeUnless { now.isAfter(it) }
+                ?: aocDateTimeForYear(now.year + 1)
+            val untilNextAoc = Duration.between(now, nextAoc)
+            throw Exception("Tomorrow is not the day of Advent of Code. AOC will begin in: ${untilNextAoc.pretty()}")
+        }
+        val year = now.year
+        initDay(year, day, fetchInput = false)
     }
 }
 

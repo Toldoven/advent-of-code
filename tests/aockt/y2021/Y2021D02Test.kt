@@ -3,7 +3,7 @@ package aockt.y2021
 import io.github.jadarma.aockt.test.AdventDay
 import io.github.jadarma.aockt.test.AdventSpec
 
-@AdventDay(2021, 2)
+@AdventDay(2021, 2, "Dive!")
 class Y2021D02Test : AdventSpec<Y2021D02>({
 
     val testInput = """

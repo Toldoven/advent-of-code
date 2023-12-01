@@ -3,7 +3,7 @@ package aockt.y2021
 import io.github.jadarma.aockt.test.AdventDay
 import io.github.jadarma.aockt.test.AdventSpec
 
-@AdventDay(2021, 1)
+@AdventDay(2021, 1, "Sonar Sweep")
 class Y2021D01Test : AdventSpec<Y2021D01>({
 
     val testInput = """

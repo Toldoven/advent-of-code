@@ -9,8 +9,7 @@ object Y2021D01 : Solution {
     private fun <T: Comparable<T>> Iterable<T>.countIncreases() =
         zipWithNext().count { it.first < it.second }
 
-    override fun partOne(input: String) = parseInput(input)
-        .countIncreases()
+    override fun partOne(input: String) = parseInput(input).countIncreases()
 
     override fun partTwo(input: String) = parseInput(input)
         .windowed(3)
