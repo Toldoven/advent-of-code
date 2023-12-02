@@ -6,75 +6,75 @@ import io.github.jadarma.aockt.core.Solution
 
 typealias Circuit = MutableMap<String, UShort>
 
-sealed class Signal
-
-data class Value(val value: UShort) : Signal()
-
-data class Wire(val wire: String) : Signal()
-
-fun Circuit.getSignal(signal: Signal) = when (signal) {
-    is Value -> signal.value
-    is Wire -> this[signal.wire]
-}
-
-fun String.toSignal() = if (isInt()) Value(toUShort()) else Wire(this)
-
-sealed class Operation {
-    // Return false if you can't make the connection
-    abstract fun connectOutput(circuit: Circuit, output: String): Boolean
-}
-
-data class Connect(val signal: Signal) : Operation() {
-    override fun connectOutput(circuit: Circuit, output: String): Boolean {
-        circuit[output] = circuit.getSignal(signal) ?: return false
-        return true
-    }
-}
-
-data class Not(val signal: Signal) : Operation() {
-    override fun connectOutput(circuit: Circuit, output: String): Boolean {
-        circuit[output] = circuit.getSignal(signal)?.inv() ?: return false
-        return true
-    }
-}
-
-data class And(val first: Signal, val second: Signal) : Operation() {
-    override fun connectOutput(circuit: Circuit, output: String): Boolean {
-        val first = circuit.getSignal(first) ?: return false
-        val second = circuit.getSignal(second) ?: return false
-        circuit[output] = first and second
-        return true
-    }
-}
-
-data class Or(val first: Signal, val second: Signal) : Operation() {
-    override fun connectOutput(circuit: Circuit, output: String): Boolean {
-        val first = circuit.getSignal(first) ?: return false
-        val second = circuit.getSignal(second) ?: return false
-        circuit[output] = first or second
-        return true
-    }
-}
-
-data class RShift(val first: Signal, val second: Signal) : Operation() {
-    override fun connectOutput(circuit: Circuit, output: String): Boolean {
-        val first = circuit.getSignal(first) ?: return false
-        val second = circuit.getSignal(second) ?: return false
-        circuit[output] = first.toInt().shr(second.toInt()).toUShort()
-        return true
-    }
-}
-
-data class LShift(val first: Signal, val second: Signal) : Operation() {
-    override fun connectOutput(circuit: Circuit, output: String): Boolean {
-        val first = circuit.getSignal(first) ?: return false
-        val second = circuit.getSignal(second) ?: return false
-        circuit[output] = first.toInt().shl(second.toInt()).toUShort()
-        return true
-    }
-}
-
 object Y2015D07 : Solution {
+
+    sealed class Signal
+
+    data class Value(val value: UShort) : Signal()
+
+    data class Wire(val wire: String) : Signal()
+
+    private fun Circuit.getSignal(signal: Signal) = when (signal) {
+        is Value -> signal.value
+        is Wire -> this[signal.wire]
+    }
+
+    private fun String.toSignal() = if (isInt()) Value(toUShort()) else Wire(this)
+
+    sealed class Operation {
+        // Return false if you can't make the connection
+        abstract fun connectOutput(circuit: Circuit, output: String): Boolean
+    }
+
+    data class Connect(val signal: Signal) : Operation() {
+        override fun connectOutput(circuit: Circuit, output: String): Boolean {
+            circuit[output] = circuit.getSignal(signal) ?: return false
+            return true
+        }
+    }
+
+    data class Not(val signal: Signal) : Operation() {
+        override fun connectOutput(circuit: Circuit, output: String): Boolean {
+            circuit[output] = circuit.getSignal(signal)?.inv() ?: return false
+            return true
+        }
+    }
+
+    data class And(val first: Signal, val second: Signal) : Operation() {
+        override fun connectOutput(circuit: Circuit, output: String): Boolean {
+            val first = circuit.getSignal(first) ?: return false
+            val second = circuit.getSignal(second) ?: return false
+            circuit[output] = first and second
+            return true
+        }
+    }
+
+    data class Or(val first: Signal, val second: Signal) : Operation() {
+        override fun connectOutput(circuit: Circuit, output: String): Boolean {
+            val first = circuit.getSignal(first) ?: return false
+            val second = circuit.getSignal(second) ?: return false
+            circuit[output] = first or second
+            return true
+        }
+    }
+
+    data class RShift(val first: Signal, val second: Signal) : Operation() {
+        override fun connectOutput(circuit: Circuit, output: String): Boolean {
+            val first = circuit.getSignal(first) ?: return false
+            val second = circuit.getSignal(second) ?: return false
+            circuit[output] = first.toInt().shr(second.toInt()).toUShort()
+            return true
+        }
+    }
+
+    data class LShift(val first: Signal, val second: Signal) : Operation() {
+        override fun connectOutput(circuit: Circuit, output: String): Boolean {
+            val first = circuit.getSignal(first) ?: return false
+            val second = circuit.getSignal(second) ?: return false
+            circuit[output] = first.toInt().shl(second.toInt()).toUShort()
+            return true
+        }
+    }
 
     private fun parseInput(input: String) = input.lineSequence().map { line ->
         val split = line.splitFromEnd(' ', limit = 3)
