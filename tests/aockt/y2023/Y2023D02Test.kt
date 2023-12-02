@@ -3,7 +3,7 @@ package aockt.y2023
 import io.github.jadarma.aockt.test.AdventDay
 import io.github.jadarma.aockt.test.AdventSpec
 
-@AdventDay(2023, 2)
+@AdventDay(2023, 2, "Cube Conundrum")
 class Y2023D02Test : AdventSpec<Y2023D02>({
     partOne {
         """

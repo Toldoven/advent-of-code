@@ -3,7 +3,7 @@ package aockt.y2015
 import io.github.jadarma.aockt.test.AdventDay
 import io.github.jadarma.aockt.test.AdventSpec
 
-@AdventDay(2015, 7)
+@AdventDay(2015, 7, "Some Assembly Required")
 class Y2015D07Test : AdventSpec<Y2015D07>({
     partOne {
         """
@@ -19,6 +19,6 @@ class Y2015D07Test : AdventSpec<Y2015D07>({
     }
 
     partTwo {
-        
+
     }
 })
