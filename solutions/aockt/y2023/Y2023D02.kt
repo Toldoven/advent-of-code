@@ -1,6 +1,9 @@
 package aockt.y2023
 
-import aockt.*
+import aockt.flatten
+import aockt.productOf
+import aockt.splitOnce
+import aockt.toEnum
 import io.github.jadarma.aockt.core.Solution
 
 object Y2023D02 : Solution {
@@ -33,5 +36,4 @@ object Y2023D02 : Solution {
             record.maxOf { it.getOrDefault(color, 0) }
         }
     }
-
 }

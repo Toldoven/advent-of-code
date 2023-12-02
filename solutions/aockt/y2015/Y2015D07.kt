@@ -1,31 +1,26 @@
 package aockt.y2015
 
+import aockt.isInt
 import aockt.splitFromEnd
 import io.github.jadarma.aockt.core.Solution
 
 typealias Circuit = MutableMap<String, UShort>
 
-sealed class Signal {
-    fun fromCircuit(circuit: Circuit) = when (this) {
-        is Value -> value
-        is Wire -> circuit[wire]
-    }
-}
+sealed class Signal
 
 data class Value(val value: UShort) : Signal()
 
 data class Wire(val wire: String) : Signal()
 
-fun Circuit.getSignal(signal: Signal) = signal.fromCircuit(this)
-
-fun String.toSignal() = if (all { it.isDigit() }) {
-    Value(toUShort())
-} else {
-    Wire(this)
+fun Circuit.getSignal(signal: Signal) = when (signal) {
+    is Value -> signal.value
+    is Wire -> this[signal.wire]
 }
 
+fun String.toSignal() = if (isInt()) Value(toUShort()) else Wire(this)
+
 sealed class Operation {
-    // Returns false if you can't make the connection
+    // Return false if you can't make the connection
     abstract fun connectOutput(circuit: Circuit, output: String): Boolean
 }
 
@@ -43,37 +38,37 @@ data class Not(val signal: Signal) : Operation() {
     }
 }
 
-data class And(val a: Signal, val b: Signal) : Operation() {
+data class And(val first: Signal, val second: Signal) : Operation() {
     override fun connectOutput(circuit: Circuit, output: String): Boolean {
-        val first = circuit.getSignal(a) ?: return false
-        val second = circuit.getSignal(b) ?: return false
+        val first = circuit.getSignal(first) ?: return false
+        val second = circuit.getSignal(second) ?: return false
         circuit[output] = first and second
         return true
     }
 }
 
-data class Or(val a: Signal, val b: Signal) : Operation() {
+data class Or(val first: Signal, val second: Signal) : Operation() {
     override fun connectOutput(circuit: Circuit, output: String): Boolean {
-        val first = circuit.getSignal(a) ?: return false
-        val second = circuit.getSignal(b) ?: return false
+        val first = circuit.getSignal(first) ?: return false
+        val second = circuit.getSignal(second) ?: return false
         circuit[output] = first or second
         return true
     }
 }
 
-data class RShift(val a: Signal, val b: Signal) : Operation() {
+data class RShift(val first: Signal, val second: Signal) : Operation() {
     override fun connectOutput(circuit: Circuit, output: String): Boolean {
-        val first = circuit.getSignal(a) ?: return false
-        val second = circuit.getSignal(b) ?: return false
+        val first = circuit.getSignal(first) ?: return false
+        val second = circuit.getSignal(second) ?: return false
         circuit[output] = first.toInt().shr(second.toInt()).toUShort()
         return true
     }
 }
 
-data class LShift(val a: Signal, val b: Signal) : Operation() {
+data class LShift(val first: Signal, val second: Signal) : Operation() {
     override fun connectOutput(circuit: Circuit, output: String): Boolean {
-        val first = circuit.getSignal(a) ?: return false
-        val second = circuit.getSignal(b) ?: return false
+        val first = circuit.getSignal(first) ?: return false
+        val second = circuit.getSignal(second) ?: return false
         circuit[output] = first.toInt().shl(second.toInt()).toUShort()
         return true
     }
@@ -106,30 +101,28 @@ object Y2015D07 : Solution {
         instructions: List<Pair<Operation, String>>,
         circuit: Circuit = mutableMapOf(),
     ): Circuit {
-        val remainingInstruction = instructions.filterNot { (operation, output) ->
+        val remainingInstructions = instructions.filterNot { (operation, output) ->
             operation.connectOutput(circuit, output)
         }
-        return if (remainingInstruction.isEmpty()) {
-            circuit
+        return if (remainingInstructions.isNotEmpty()) {
+            processInstructions(remainingInstructions, circuit)
         } else {
-            processInstructions(remainingInstruction, circuit)
+            circuit
         }
     }
 
-    override fun partOne(input: String) = processInstructions(parseInput(input))
-        .getOrDefault("a", 0u)
+    private fun processInstructionsGetA(
+        instructions: List<Pair<Operation, String>>,
+    ) = processInstructions(instructions).getOrDefault("a", 0u)
+
+    override fun partOne(input: String) = parseInput(input).let(::processInstructionsGetA)
 
     override fun partTwo(input: String): UShort {
         val instructions = parseInput(input)
-        val a = processInstructions(instructions).getOrDefault("a", 0u)
-        val newInstructions = instructions.map {
-            if (it.second == "b") {
-                Connect(Value(a)) to it.second
-            } else {
-                it
-            }
+        val a = processInstructionsGetA(instructions)
+        val newInstructions = instructions.map { (operation, output) ->
+            (if (output == "b") Connect(Value(a)) else operation) to output
         }
-        return processInstructions(newInstructions)
-            .getOrDefault("a", 0u)
+        return processInstructionsGetA(newInstructions)
     }
 }

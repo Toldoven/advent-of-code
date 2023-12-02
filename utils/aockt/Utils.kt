@@ -72,6 +72,8 @@ inline fun <K, V> MutableMap<K, V>.defaultAndModify(key: K, default: V, modify: 
     this[key] = getOrDefault(key, default).let(modify)
 }
 
+fun String.isInt() = trim().all { it.isDigit() }
+
 
 fun all(vararg boolean: Boolean) = boolean.all { it }
 
