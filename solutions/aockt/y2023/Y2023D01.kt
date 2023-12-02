@@ -3,8 +3,6 @@ package aockt.y2023
 import io.github.jadarma.aockt.core.Solution
 
 object Y2023D01 : Solution {
-    private val String.firstDigit get() = find { it.isDigit() }?.digitToInt() ?: 0
-    private val String.lastDigit get() = findLast { it.isDigit() }?.digitToInt() ?: 0
 
     private fun Iterable<String>.sumOfFirstAndLastDigit() = sumOf { line ->
         val firstDigit = line.find { it.isDigit() }?.digitToInt() ?: 0
@@ -12,12 +10,12 @@ object Y2023D01 : Solution {
         firstDigit * 10 + lastDigit
     }
 
+    override fun partOne(input: String) = input.lines().sumOfFirstAndLastDigit()
+
     private val numberMap = listOf(
         "zero", "one", "two", "three", "four",
         "five", "six", "seven", "eight", "nine",
     ).mapIndexed { index, key -> key to "$key$index$key"}
-
-    override fun partOne(input: String) = input.lines().sumOfFirstAndLastDigit()
 
     override fun partTwo(input: String) = input.lines().map {
         numberMap.fold(it) { line, (pattern, replaceWith) ->

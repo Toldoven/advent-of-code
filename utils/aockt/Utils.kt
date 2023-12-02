@@ -58,7 +58,7 @@ fun String.toIntVec2() =
     this.splitOnce(',').let { IntVec2(it.first.toInt(), it.second.toInt()) }
 
 
-class SquareGrid<T> (size: Int = 1000, init: (Int) -> T) {
+class SquareGrid<T>(size: Int = 1000, init: (Int) -> T) {
     val grid = List(1000) { MutableList(1000, init) }
 }
 
@@ -67,6 +67,13 @@ fun <K, V> Iterable<Map<K, V>>.flatten() = map { it.toList() }.flatten()
 inline fun <A, B, R> Pair<A, B>.letFirst(transform: (A) -> R) = let { transform(it.first) to it.second }
 
 inline fun <A, B, R> Pair<A, B>.letSecond(transform: (B) -> R) = let { it.first to transform(it.second) }
+
+inline fun <K, V> MutableMap<K, V>.defaultAndModify(key: K, default: V, modify: (V) -> V) {
+    this[key] = getOrDefault(key, default).let(modify)
+}
+
+
+fun all(vararg boolean: Boolean) = boolean.all { it }
 
 fun <T> T.dbg(): T {
     println(this)
