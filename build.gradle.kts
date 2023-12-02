@@ -36,14 +36,10 @@ repositories {
 dependencies {
     val aocktVersion = "0.1.0"
     val kotestVersion = "5.5.5"
-//    val ktorVersion = "2.3.6"
 
     implementation("io.github.jadarma.aockt:aockt-core:$aocktVersion")
-    testImplementation("io.github.jadarma.aockt:aockt-test:$aocktVersion")
-    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-
-//    implementation("io.ktor:ktor-client-core:$ktorVersion")
-//    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.github.jadarma.aockt:aockt-test:$aocktVersion")
+    implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
 }
 
 tasks.test {
@@ -143,13 +139,7 @@ fun initDay(year: Int, day: Int, fetchInput: Boolean = true) {
     
             @AdventDay($year, $day)
             class $testClass : AdventSpec<$solutionClass>({
-                partOne {
                 
-                }
-                
-                partTwo {
-                
-                }
             })
         """.trimIndent())
 

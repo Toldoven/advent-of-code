@@ -6,11 +6,15 @@ object Y2023D01 : Solution {
     private val String.firstDigit get() = find { it.isDigit() }?.digitToInt() ?: 0
     private val String.lastDigit get() = findLast { it.isDigit() }?.digitToInt() ?: 0
 
-    private fun Iterable<String>.sumOfFirstAndLastDigit() = sumOf { it.firstDigit * 10 + it.lastDigit }
+    private fun Iterable<String>.sumOfFirstAndLastDigit() = sumOf { line ->
+        val firstDigit = line.find { it.isDigit() }?.digitToInt() ?: 0
+        val lastDigit = line.findLast { it.isDigit() }?.digitToInt() ?: 0
+        firstDigit * 10 + lastDigit
+    }
 
     private val numberMap = listOf(
         "zero", "one", "two", "three", "four",
-        "five", "six", "seven", "eight", "nine"
+        "five", "six", "seven", "eight", "nine",
     ).mapIndexed { index, key -> key to "$key$index$key"}
 
     override fun partOne(input: String) = input.lines().sumOfFirstAndLastDigit()

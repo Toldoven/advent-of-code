@@ -1,6 +1,7 @@
 package aockt.y2021
 
 import aockt.splitOnce
+import aockt.toEnum
 import io.github.jadarma.aockt.core.Solution
 
 object Y2021D02 : Solution {
@@ -11,11 +12,9 @@ object Y2021D02 : Solution {
 
     enum class Command { FORWARD, UP, DOWN }
 
-    private fun String.toCommand() = Command.valueOf(this.uppercase())
-
     private fun parseInput(input: String) = input.lines().map {
         val (command, value) = it.splitOnce(' ')
-        command.toCommand() to value.toInt()
+        command.toEnum<Command>() to value.toInt()
     }
 
     override fun partOne(input: String) = parseInput(input)
