@@ -21,12 +21,22 @@ fun CharSequence.splitOnce(vararg delimiters: Char, ignoreCase: Boolean = false)
 fun CharSequence.splitFromEnd(vararg delimiters: Char, ignoreCase: Boolean = false, limit: Int = 0) =
     reversed().split(*delimiters, ignoreCase = ignoreCase, limit = limit).map { it.reversed() }.reversed()
 
-fun Iterable<Int>.product() = reduce { acc, cur -> acc * cur}
+fun Iterable<Int>.product() = reduce { acc, cur -> acc * cur }
+
+fun Iterable<Long>.product() = reduce { acc, cur -> acc * cur }
+
+inline fun <T> Iterable<T>.productOf(transform: (T) -> Int) = map(transform).product()
 
 inline fun <T, V> Iterable<T>.indexedAssociateWith(valueSelector: (Int, T) -> V) =
     withIndex().map { (index, key) -> key to valueSelector(index, key) }
 
 inline fun <T, V> Iterable<T>.indexedAssociateWith(valueSelector: (Int) -> V) =
+    withIndex().map { (index, key) -> key to valueSelector(index) }
+
+inline fun <T, V> Sequence<T>.indexedAssociateWith(crossinline valueSelector: (Int, T) -> V) =
+    withIndex().map { (index, key) -> key to valueSelector(index, key) }
+
+inline fun <T, V> Sequence<T>.indexedAssociateWith(crossinline valueSelector: (Int) -> V) =
     withIndex().map { (index, key) -> key to valueSelector(index) }
 
 inline fun <V> CharSequence.indexedAssociateWith(valueSelector: (Int, Char) -> V) =
@@ -52,6 +62,11 @@ class SquareGrid<T> (size: Int = 1000, init: (Int) -> T) {
     val grid = List(1000) { MutableList(1000, init) }
 }
 
+fun <K, V> Iterable<Map<K, V>>.flatten() = map { it.toList() }.flatten()
+
+inline fun <A, B, R> Pair<A, B>.letFirst(transform: (A) -> R) = let { transform(it.first) to it.second }
+
+inline fun <A, B, R> Pair<A, B>.letSecond(transform: (B) -> R) = let { it.first to transform(it.second) }
 
 fun <T> T.dbg(): T {
     println(this)
