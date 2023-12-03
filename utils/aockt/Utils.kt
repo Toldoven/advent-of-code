@@ -2,6 +2,8 @@ package aockt
 
 import java.math.BigInteger
 import java.security.MessageDigest
+import kotlin.math.max
+import kotlin.math.min
 
 private fun splitOnceInner(split: List<String>) = if (split.size == 2) split[0] to split[1] else null
 
@@ -72,7 +74,15 @@ inline fun <K, V> MutableMap<K, V>.defaultAndModify(key: K, default: V, modify: 
     this[key] = getOrDefault(key, default).let(modify)
 }
 
-fun String.isInt() = trim().all { it.isDigit() }
+fun String.isInt() = trim().all { it.isDigit() } && isNotEmpty()
+
+fun <T> List<T>.safeSlice(indices: IntRange) = slice(
+    max(indices.first, 0)..min(indices.last, size - 1),
+)
+
+fun CharSequence.safeSlice(indices: IntRange) = slice(
+    max(indices.first, 0)..min(indices.last, length - 1),
+)
 
 
 fun all(vararg boolean: Boolean) = boolean.all { it }
