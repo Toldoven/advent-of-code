@@ -85,6 +85,28 @@ fun CharSequence.safeSlice(indices: IntRange) = slice(
 )
 
 
+fun <T, R> T.letIf(condition: Boolean, transform: (T) -> R) =
+    if (condition) transform(this) else null
+
+fun <T, R> T.letIfElse(condition: Boolean, transformTrue: (T) -> R, transformFalse: (T) -> R) =
+    if (condition) transformTrue(this) else transformFalse(this)
+
+
+class DestructibleList<T>(private val list: List<T>) {
+    operator fun component1() = list[0]
+    operator fun component2() = list[1]
+    operator fun component3() = list[2]
+    operator fun component4() = list[3]
+    operator fun component5() = list[4]
+    operator fun component6() = list[5]
+    operator fun component7() = list[6]
+    operator fun component8() = list[7]
+    operator fun component9() = list[8]
+}
+
+val <T> List<T>.destructible get() = DestructibleList(this)
+
+
 fun all(vararg boolean: Boolean) = boolean.all { it }
 
 fun <T> T.dbg(): T {

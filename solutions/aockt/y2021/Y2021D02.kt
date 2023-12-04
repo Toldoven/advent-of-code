@@ -18,23 +18,28 @@ object Y2021D02 : Solution {
     }
 
     override fun partOne(input: String) = parseInput(input)
-        .fold(Submarine()) { submarine, (command, value) -> submarine.apply {
-            when (command) {
-                Command.FORWARD -> position += value
-                Command.UP -> depth -= value
-                Command.DOWN -> depth += value
+        .fold(Submarine()) { submarine, (command, value) ->
+            submarine.apply {
+                when (command) {
+                    Command.FORWARD -> position += value
+                    Command.UP -> depth -= value
+                    Command.DOWN -> depth += value
+                }
             }
-        }}.result
+        }.result
 
     override fun partTwo(input: String) = parseInput(input)
-        .fold(Submarine()) { submarine, (command, value) ->  submarine.apply {
-            when (command) {
-                Command.FORWARD -> {
-                    position += value
-                    depth += aim * value
+        .fold(Submarine()) { submarine, (command, value) ->
+            submarine.apply {
+                when (command) {
+                    Command.FORWARD -> {
+                        position += value
+                        depth += aim * value
+                    }
+
+                    Command.UP -> aim -= value
+                    Command.DOWN -> aim += value
                 }
-                Command.UP -> aim -= value
-                Command.DOWN -> aim += value
             }
-        }}.result
+        }.result
 }

@@ -5,10 +5,18 @@ import io.github.jadarma.aockt.test.AdventSpec
 
 @AdventDay(2015, 9, "All in a Single Night")
 class Y2015D09Test : AdventSpec<Y2015D09>({
-    partOne {
 
+    val testInput = """
+        London to Dublin = 464
+        London to Belfast = 518
+        Dublin to Belfast = 141
+    """.trimIndent()
+
+    partOne {
+        testInput shouldOutput 605
     }
-//    partTwo {
-//
-//    }
+
+    partTwo {
+        testInput shouldOutput 982
+    }
 })

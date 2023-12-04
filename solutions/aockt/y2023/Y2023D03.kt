@@ -16,9 +16,8 @@ object Y2023D03 : Solution {
             val lineIndex = match.range.first / lineLength
             val firstIndex = match.range.first % lineLength - 1
             val lastIndex = match.range.last % lineLength + 1
-            val linesRange = (lineIndex - 1)..(lineIndex + 1)
-            lines
-                .safeSlice(linesRange)
+            val linesRange = lineIndex.minus(1)..lineIndex.plus(1)
+            lines.safeSlice(linesRange)
                 .joinToString("") { it.safeSlice(firstIndex..lastIndex) }
                 .any { !it.isDigit() && it != '.' }
         }.sumOf { it.value.toInt() }
@@ -50,11 +49,10 @@ object Y2023D03 : Solution {
     override fun partTwo(input: String): Int {
         val lines = input.lines()
         val lineLength = lines.first().length + 1
-
         return starRegex.findAll(input).sumOf { match ->
             val lineIndex = match.range.first / lineLength
             val starIndex = match.range.first % lineLength
-            val linesRange = (lineIndex - 1)..(lineIndex + 1)
+            val linesRange = lineIndex.minus(1)..lineIndex.plus(1)
             lines.safeSlice(linesRange)
                 .flatMap { findAdjacentNumbers(it, starIndex) }
                 .takeIf { it.size == 2 }
