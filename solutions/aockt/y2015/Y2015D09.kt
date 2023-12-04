@@ -26,7 +26,7 @@ object Y2015D09 : Solution {
         visitCities: Set<String>,
         alreadyTraveled: Int = 0,
     ): Sequence<Int> = when (visitCities.size) {
-        in 0..1 -> sequenceOf(alreadyTraveled + visitCities.sumOf { distanceToCity(startAt, it) })
+        in 0..1 -> visitCities.asSequence().map { distanceToCity(startAt, it) + alreadyTraveled }
         else -> visitCities.asSequence().flatMap { destination ->
             val traveled = alreadyTraveled + distanceToCity(startAt, destination)
             possibleRoutes(destination, visitCities - destination, traveled)
