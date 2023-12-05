@@ -1,9 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
-import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
-import org.gradle.kotlin.dsl.KotlinClosure2
-import java.net.HttpURLConnection
-import java.net.URL
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.Month
@@ -19,13 +13,14 @@ kotlin {
 }
 
 sourceSets {
-    main.configure {
-        kotlin.srcDir("$projectDir/solutions")
-        kotlin.srcDir("$projectDir/utils")
+    main {
+        kotlin.srcDir("src")
     }
-    test.configure {
-        kotlin.srcDir("$projectDir/tests")
-        resources.srcDir("$projectDir/inputs")
+}
+
+tasks {
+    wrapper {
+        gradleVersion = "8.5"
     }
 }
 
@@ -34,39 +29,11 @@ repositories {
 }
 
 dependencies {
-    val aocktVersion = "0.1.0"
-    val kotestVersion = "5.5.5"
-
-    implementation("io.github.jadarma.aockt:aockt-core:$aocktVersion")
-    implementation("io.github.jadarma.aockt:aockt-test:$aocktVersion")
-    implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-}
-
-tasks.test {
-    useJUnitPlatform()
-    testLogging {
-        events = setOf(FAILED, SKIPPED)
-        exceptionFormat = FULL
-        showStandardStreams = true
-        showCauses = true
-        showExceptions = true
-        showStackTraces = false
-
-        // Prints a summary at the end.
-        afterSuite(KotlinClosure2({ desc: TestDescriptor, result: TestResult ->
-            if (desc.parent != null) return@KotlinClosure2
-            with(result) {
-                println(
-                    "\nResults: $resultType (" +
-                    "$testCount tests, " +
-                    "$successfulTestCount passed, " +
-                    "$failedTestCount failed, " +
-                    "$skippedTestCount skipped" +
-                    ")"
-                )
-            }
-        }))
-    }
+//    val arrowVersion = "1.2.0"
+//    implementation("io.arrow-kt:arrow-core:$arrowVersion")
+//    implementation("io.arrow-kt:arrow-fx-coroutines:$arrowVersion")
+//    implementation("com.google.code.gson:gson:2.10.1")
+//    implementation("com.github.ajalt.mordant:mordant:2.2.0")
 }
 
 // ---
@@ -75,165 +42,84 @@ fun getPropertyInt(key: String) = (properties[key] as String?)?.toInt()
 
 val defaultAdventOfCodeYear = getPropertyInt("adventOfCodeYear")
 
-fun now() = LocalDateTime.now(
+fun now(): LocalDateTime = LocalDateTime.now(
     // Advent of Code puzzles are published on midnight EST
     ZoneId.of("America/New_York")
 )
 
-fun fetchInput(year: Int, day: Int) {
-    val session = project.extra["session"]
-
-    val input = URL("https://adventofcode.com/$year/day/$day/input")
-        .openConnection()
-        .let { it as HttpURLConnection }
-        .apply {
-            requestMethod = "GET"
-            setRequestProperty("Cookie", "session=$session")
-        }
-        .getInputStream()
-        .bufferedReader()
-        .readText()
+fun initDay(year: Int, day: Int) {
 
     val paddedDay = day.toString().padStart(2, '0')
 
-    val inputFile = file("inputs/aockt/y$year/d$paddedDay/input.txt")
+    val solutionFile = file("src/year$year/day$paddedDay/Y${year}D${paddedDay}.kt")
 
-    inputFile.apply { parentFile.mkdirs() }.writeText(input)
-}
-
-fun initDay(year: Int, day: Int, fetchInput: Boolean = true) {
-
-    if (fetchInput) fetchInput(year, day)
-
-    val paddedDay = day.toString().padStart(2, '0')
-
-    val solutionClass = "Y${year}D${paddedDay}"
-    val testClass = solutionClass + "Test"
-
-    val solutionFile = file("solutions/aockt/y$year/${solutionClass}.kt")
-    val testFile = file("tests/aockt/y$year/${testClass}.kt")
-
-    solutionFile
-        .takeUnless { it.isFile }
-        ?.apply { parentFile.mkdirs() }
-        ?.writeText("""
-            package aockt.y$year
+    solutionFile.takeUnless { it.isFile }?.apply {
+        parentFile.mkdirs()
+        writeText("""
+            package year$year.day$paddedDay
     
-            import io.github.jadarma.aockt.core.Solution
+            import framework.solution
     
-            object $solutionClass : Solution {
-                override fun partOne(input: String): Any {
-                    return 0
+            fun main() = solution($year, $day) {
+                partOne {
+                
+                } 
+                
+                partOneTest {
+                
                 }
             }
         """.trimIndent())
+    }
 
-    testFile
-        .takeUnless { it.isFile }
-        ?.apply { parentFile.mkdirs() }
-        ?.writeText("""
-            package aockt.y$year
-    
-            import io.github.jadarma.aockt.test.AdventDay
-            import io.github.jadarma.aockt.test.AdventSpec
-    
-            @AdventDay($year, $day)
-            class $testClass : AdventSpec<$solutionClass>({
-                
-            })
-        """.trimIndent())
-
-    println("""
+    logger.info("""
         ─────────────────────────────────────────────
         Year $year, Day $day
         $solutionFile
-        $testFile
         ─────────────────────────────────────────────
     """.trimIndent())
 }
 
-tasks.register("setupSession") {
-    group = "adventofcode"
-    val exception = Exception("Please enter your session token in .session file")
-    doLast {
-        val file = file(".session")
-        if (!file.isFile) {
-            file.createNewFile()
-            throw exception
-        }
-        val text = file.readText()
-        if (text.isBlank()) {
-            throw exception
-        }
-        project.extra["session"] = text
-        return@doLast
-    }
-}
-
 fun aocDateTimeForYear(year: Int): LocalDateTime = LocalDateTime.of(year, Month.DECEMBER, 1, 0, 0)
 
-fun Duration.pretty(): String {
-    val months = toDays() / 30
-    val days = toDays()
-    val hours = toHoursPart().toLong()
-    val minutes = toMinutesPart().toLong()
+val LocalDateTime.isDayOfAoc get() = month == Month.DECEMBER && dayOfMonth in 1..25
 
-    fun pluralize(ofWhat: String, howMany: Long) = when (howMany) {
-        in -1..1 -> "$howMany $ofWhat"
-        else -> "$howMany ${ofWhat}s"
-    }
-
-    return when {
-        months > 0 -> pluralize("month", months)
-        days > 0 -> pluralize("day", days)
-        else -> "${pluralize("hour", hours)} and ${pluralize("minute", minutes)}"
-    }
-}
+//fun LocalDateTime.untilNextAoc(): Duration {
+//    val nextAoc = aocDateTimeForYear(year)
+//        .takeUnless { isAfter(it) }
+//        ?: aocDateTimeForYear(year + 1)
+//    return Duration.between(this, nextAoc)
+//}
 
 tasks.register("initToday") {
     group = "adventofcode"
-    dependsOn("setupSession")
     doLast {
-        val now = now()
-        val day = now.dayOfMonth
-        if (now.month != Month.DECEMBER || day < 1 || day > 25) {
-            val nextAoc = aocDateTimeForYear(now.year)
-                .takeUnless { now.isAfter(it) }
-                ?: aocDateTimeForYear(now.year + 1)
-            val untilNextAoc = Duration.between(now, nextAoc)
-            throw Exception("Today is not the day of Advent of Code. AOC will begin in: ${untilNextAoc.pretty()}")
+        val dateTime = now().takeIf { it.isDayOfAoc } ?: run {
+            logger.error("Today is not the day of Advent of Code")
+            return@doLast
         }
-        val year = now.year
-        initDay(year, day)
+        initDay(dateTime.year, dateTime.dayOfMonth)
     }
 }
 
 tasks.register("initTomorrow") {
     group = "adventofcode"
     doLast {
-        val now = now().plusDays(1)
-        val day = now.dayOfMonth
-        if (now.month != Month.DECEMBER || day < 1 || day > 25) {
-            val nextAoc = aocDateTimeForYear(now.year)
-                .takeUnless { now.isAfter(it) }
-                ?: aocDateTimeForYear(now.year + 1)
-            val untilNextAoc = Duration.between(now, nextAoc)
-            throw Exception("Tomorrow is not the day of Advent of Code. AOC will begin in: ${untilNextAoc.pretty()}")
+        val dateTime = now().plusDays(1).takeIf { it.isDayOfAoc } ?: run {
+            logger.error("Tomorrow is not the day of Advent of Code")
+            return@doLast
         }
-        val year = now.year
-        initDay(year, day, fetchInput = false)
+        initDay(dateTime.year, dateTime.dayOfMonth)
     }
 }
 
 (1..25).forEach { day ->
     tasks.register("initDay$day") {
         group = "adventofcode"
-        dependsOn("setupSession")
         doLast {
-            val now = now()
             val year = defaultAdventOfCodeYear ?: run {
-                println("Year is not specified, falling back to current year...")
-                now.year
+                logger.debug("Year is not specified, falling back to current year...")
+                now().year
             }
             initDay(year, day)
         }
