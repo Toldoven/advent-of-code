@@ -1,8 +1,6 @@
 package aockt.y2015
 
 import io.github.jadarma.aockt.core.Solution
-import io.github.jadarma.aockt.test.AdventDay
-import io.github.jadarma.aockt.test.AdventSpec
 
 object Y2015D01 : Solution {
 

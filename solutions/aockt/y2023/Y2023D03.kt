@@ -50,7 +50,6 @@ object Y2023D03 : Solution {
         val lines = input.lines()
         val lineLength = lines.first().length + 1
         return starRegex.findAll(input).sumOf { match ->
-            match.destructured
             val lineIndex = match.range.first / lineLength
             val starIndex = match.range.first % lineLength
             val linesRange = lineIndex.minus(1)..lineIndex.plus(1)
