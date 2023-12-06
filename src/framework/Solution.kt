@@ -46,19 +46,19 @@ class Solution(private val day: Day) {
         }
     }
 
-    private val partOneTest = TestRunner()
+    private val partOneTest = PartTestRunner()
 
-    private val partTwoTest = TestRunner()
+    private val partTwoTest = PartTestRunner()
 
-    fun partOneTest(block: TestRunner.() -> Unit) {
+    fun partOneTest(block: PartTestRunner.() -> Unit) {
         partOneTest.apply(block)
     }
 
-    fun partTwoTest(block: TestRunner.() -> Unit) {
+    fun partTwoTest(block: PartTestRunner.() -> Unit) {
         partTwoTest.apply(block)
     }
 
-    private fun executePart(partNumber: Int, input: DefaultInputProvider, part: Part?, testRunner: TestRunner) {
+    private fun executePart(partNumber: Int, input: DefaultInputProvider, part: Part?, testRunner: PartTestRunner) {
         if (part == null) {
             return
         }
@@ -102,7 +102,7 @@ class Solution(private val day: Day) {
         val input = inputFetcher.fetchInput()
         println(prettyLine('─', "Part One"))
         executePart(1, input, partOne, partOneTest)
-        println(prettyLine('─',  "Part Two"))
+        println(prettyLine('─', "Part Two"))
         executePart(2, input, partTwo, partTwoTest)
 //        println(prettyLine('─'))
     }
