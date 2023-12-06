@@ -5,14 +5,11 @@ import framework.solution
 
 fun main() = solution(2015, 11, "Corporate Policy") {
 
-    val nextCharMap = ('a'..'z').associateWith {
-        when (it) {
-            'z' -> 'a'
-            else -> (it.code + 1).toChar()
-        }
+    fun Char.next() = when (this) {
+        'z' -> 'a'
+        in 'a'..'z' -> this + 1
+        else -> throw IllegalArgumentException("Character not supported")
     }
-
-    fun Char.next() = nextCharMap[this] ?: throw IllegalArgumentException("Only lowercase chars are supported")
 
     tailrec fun incrementString(string: String, acc: String = ""): String {
         val newChar = string.last().next()
@@ -28,9 +25,7 @@ fun main() = solution(2015, 11, "Corporate Policy") {
 
     fun InputProvider.passwordSequence() = generateSequence(input) { incrementString(it) }.filter { password ->
         val alphabet = password.windowed(3).any {
-            val checkWrap = it[1] != 'a' && it[2] != 'a'
-            val checkMatch = it[0].next().next() == it[2] && it[1].next() == it[2]
-            checkWrap && checkMatch
+            it[0] + 2 == it[2] && it[1] + 1 == it[2]
         }
         val filter = password.all { it != 'i' && it != 'o' && it != 'l' }
         val doubleLetter = doubleLetterRegex.findAll(password).count() >= 2
@@ -38,10 +33,18 @@ fun main() = solution(2015, 11, "Corporate Policy") {
     }
 
     partOne {
-        passwordSequence().elementAt(0)
+        passwordSequence().first()
     }
 
     partTwo {
         passwordSequence().elementAt(1)
+    }
+
+    partOneTest {
+        "aaaaaaaa" shouldOutput "aaaaaabc"
+    }
+
+    partTwoTest {
+        "aaaaaaaa" shouldOutput "aaaaabca"
     }
 }
