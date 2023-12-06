@@ -6,26 +6,25 @@ import utils.productOf
 
 fun main() = solution(2023, 6, "Wait For It") {
 
+    fun countWaysToBeatRecord(time: Long, record: Long) = (0..time).count { heldFor ->
+        val traveled = (time - heldFor) * heldFor
+        traveled > record
+    }
+
     partOne {
-        val (timeList, distanceList) = lines.map { line ->
+        val (timeList, recordList) = lines.map { line ->
             line.substringAfter(":").parseNumbersLong(' ')
         }
-        timeList.zip(distanceList).productOf { (time, distance) ->
-            (0..time).count { heldFor ->
-                val traveled = (time - heldFor) * heldFor
-                traveled > distance
-            }
+        timeList.zip(recordList).productOf { (time, record) ->
+            countWaysToBeatRecord(time, record)
         }
     }
 
     partTwo {
-        val (time, distance) = lines.map { line ->
+        val (time, record) = lines.map { line ->
             line.substringAfter(":").filterNot { it.isWhitespace() }.toLong()
         }
-        (0..time).count { heldFor ->
-            val traveled = (time - heldFor) * heldFor
-            traveled > distance
-        }
+        countWaysToBeatRecord(time, record)
     }
 
     val testInput = """
