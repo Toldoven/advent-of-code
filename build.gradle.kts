@@ -1,10 +1,10 @@
-import java.time.Duration
 import java.time.LocalDateTime
 import java.time.Month
 import java.time.ZoneId
 
 plugins {
     kotlin("jvm") version "1.9.20"
+    kotlin("plugin.serialization") version "1.9.20"
     idea
 }
 
@@ -33,6 +33,7 @@ dependencies {
 //    implementation("io.arrow-kt:arrow-core:$arrowVersion")
 //    implementation("io.arrow-kt:arrow-fx-coroutines:$arrowVersion")
 //    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 //    implementation("com.github.ajalt.mordant:mordant:2.2.0")
 }
 
@@ -55,7 +56,8 @@ fun initDay(year: Int, day: Int) {
 
     solutionFile.takeUnless { it.isFile }?.apply {
         parentFile.mkdirs()
-        writeText("""
+        writeText(
+            """
             package year$year.day$paddedDay
     
             import framework.solution
@@ -69,15 +71,18 @@ fun initDay(year: Int, day: Int) {
                 
                 }
             }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 
-    logger.info("""
+    logger.info(
+        """
         ─────────────────────────────────────────────
         Year $year, Day $day
         $solutionFile
         ─────────────────────────────────────────────
-    """.trimIndent())
+    """.trimIndent()
+    )
 }
 
 fun aocDateTimeForYear(year: Int): LocalDateTime = LocalDateTime.of(year, Month.DECEMBER, 1, 0, 0)
