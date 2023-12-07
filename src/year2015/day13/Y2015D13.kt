@@ -19,7 +19,7 @@ fun main() = solution(2015, 13, "Knights of the Dinner Table") {
     fun HapinessMap.happinessFor(personOne: String, personTwo: String): Int {
         return (get(personOne)?.get(personTwo) ?: 0) + (get(personTwo)?.get(personOne) ?: 0)
     }
-
+    
     fun HapinessMap.bestOutcome(
         addSelf: Boolean,
         current: List<String> = emptyList(),

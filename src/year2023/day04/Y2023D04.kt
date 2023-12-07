@@ -1,5 +1,6 @@
 package year2023.day04
 
+import arrow.core.MemoizedDeepRecursiveFunction
 import framework.solution
 import kotlin.math.pow
 
@@ -22,14 +23,12 @@ fun main() = solution(2023, 4, "Scratchcards") {
     partTwo {
         val allCards = parseInput(input).toList()
 
-        val memoize = hashMapOf<Int, Int>()
-
-        fun processCard(index: Int): Int = memoize.getOrPut(index) {
+        val processCard = MemoizedDeepRecursiveFunction<Int, Int> { index ->
             val (yours, winning) = allCards[index]
             val cardsMatch = yours.count { winning.contains(it) }
             if (cardsMatch > 0) {
                 val range = index + 1..index + cardsMatch
-                range.sumOf { processCard(it) } + 1
+                range.sumOf { callRecursive(it) } + 1
             } else {
                 1
             }
