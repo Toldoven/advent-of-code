@@ -86,6 +86,9 @@ fun CharSequence.safeSlice(indices: IntRange) = slice(
     max(indices.first, 0)..min(indices.last, length - 1),
 )
 
+fun <T> List<T>.safeSublist(indices: IntRange) = subList(
+    max(indices.first, 0), min(indices.last, size - 1) + 1,
+)
 
 fun <T, R> T.letIf(condition: Boolean, transform: (T) -> R) =
     if (condition) transform(this) else null

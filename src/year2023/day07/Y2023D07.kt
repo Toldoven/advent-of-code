@@ -16,9 +16,8 @@ data class Hand(val value: String, val bid: Int) {
     }
 
     val scoreWithJoker by lazy {
-        val countCards = value.groupingBy { it }.eachCount()
-        val withoutJoker = countCards - 'J'
-        val mostCommon = withoutJoker.maxByOrNull { it.value }?.key ?: 'J'
+        val countCards = value.groupingBy { it }.eachCount() - 'J'
+        val mostCommon = countCards.maxByOrNull { it.value }?.key ?: 'J'
         value.replace('J', mostCommon).score
     }
 
@@ -28,12 +27,22 @@ data class Hand(val value: String, val bid: Int) {
             val highestCount = countCards.maxOf { it.value }
             val pairCount = countCards.values.count { it == 2 }
             return when (highestCount) {
-                1 -> 1
-                2 -> if (pairCount == 2) 3 else 2
-                3 -> if (pairCount == 1) 5 else 4
-                4 -> 6
-                5 -> 7
-                else -> 0
+                1 -> 1 // High card
+                2 -> if (pairCount == 2) {
+                    3 // Two pair
+                } else {
+                    2 // One pair
+                }
+
+                3 -> if (pairCount == 1) {
+                    5 // Full house
+                } else {
+                    4 // Three of a kind
+                }
+
+                4 -> 6 // Four of a kind
+                5 -> 7 // Five of a kind
+                else -> 0 // Should not be possible
             }
         }
 }
@@ -59,7 +68,7 @@ class HandComparator(private val weightMap: WeightMap, private val withJoker: Bo
 }
 
 
-fun main() = solution(2023, 7) {
+fun main() = solution(2023, 7, "Camel Cards") {
 
     fun InputProvider.parseInput() = lines.map { line ->
         val (handValue, bid) = line.split(' ')
