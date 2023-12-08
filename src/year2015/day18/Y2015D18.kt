@@ -62,9 +62,10 @@ fun main() = solution(2015, 18, "Like a GIF For Your Yard") {
         val sequence = generateSequence(inputGrid) { grid ->
             grid.mapIndexed { index, value ->
                 if (grid.isCorner(index)) {
-                    return@mapIndexed true
+                    true
+                } else {
+                    grid.processCell(index, value)
                 }
-                grid.processCell(index, value)
             }
         }
         sequence.elementAt(100).cellSequence().count { it }

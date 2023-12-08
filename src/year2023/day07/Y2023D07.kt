@@ -9,61 +9,62 @@ fun List<Char>.toWeightMap(): WeightMap = reversed()
     .withIndex()
     .associate { it.value to it.index }
 
-data class Hand(val value: String, val bid: Int) {
+enum class HandType {
+    HIGH_CARD,
+    ONE_PAIR,
+    TWO_PAIR,
+    THREE_OF_A_KIND,
+    FULL_HOUSE,
+    FOUR_OF_A_KIND,
+    FIVE_OF_A_KIND;
 
-    val score by lazy {
-        value.score
-    }
-
-    val scoreWithJoker by lazy {
-        val countCards = value.groupingBy { it }.eachCount() - 'J'
-        val mostCommon = countCards.maxByOrNull { it.value }?.key ?: 'J'
-        value.replace('J', mostCommon).score
-    }
-
-    private val String.score: Int
-        get() {
-            val countCards = this.groupingBy { it }.eachCount()
+    companion object {
+        fun fromHandValue(handValue: String): HandType {
+            val countCards = handValue.groupingBy { it }.eachCount()
             val highestCount = countCards.maxOf { it.value }
             val pairCount = countCards.values.count { it == 2 }
             return when (highestCount) {
-                1 -> 1 // High card
-                2 -> if (pairCount == 2) {
-                    3 // Two pair
-                } else {
-                    2 // One pair
-                }
-
-                3 -> if (pairCount == 1) {
-                    5 // Full house
-                } else {
-                    4 // Three of a kind
-                }
-
-                4 -> 6 // Four of a kind
-                5 -> 7 // Five of a kind
-                else -> 0 // Should not be possible
+                1 -> HIGH_CARD
+                2 -> if (pairCount == 2) TWO_PAIR else ONE_PAIR
+                3 -> if (pairCount == 1) FULL_HOUSE else THREE_OF_A_KIND
+                4 -> FOUR_OF_A_KIND
+                5 -> FIVE_OF_A_KIND
+                else -> throw Exception("This hand is not possible: $handValue")
             }
         }
+    }
+}
+
+data class Hand(val value: String, val bid: Int) {
+
+    val type by lazy {
+        HandType.fromHandValue(value)
+    }
+
+    val typeWithJoker by lazy {
+        val countCards = value.groupingBy { it }.eachCount() - 'J'
+        val mostCommon = countCards.maxByOrNull { it.value }?.key ?: 'J'
+        val valueWithJoker = value.replace('J', mostCommon)
+        HandType.fromHandValue(valueWithJoker)
+    }
 }
 
 class HandComparator(private val weightMap: WeightMap, private val withJoker: Boolean) : Comparator<Hand> {
 
-    private val Char.weight get() = weightMap[this] ?: throw IllegalArgumentException("This character is not a card")
+    private val Char.cardWeight
+        get() = weightMap[this] ?: throw IllegalArgumentException("This character is not a card")
 
-    private fun Char.compareToCard(card: Char) = weight.compareTo(card.weight)
-
-    private fun String.compareToHand(hand: String) = zip(hand)
-        .map { (card1, card2) -> card1.compareToCard(card2) }
+    private fun Hand.compareByCardWeight(other: Hand) = value.zip(other.value)
+        .map { (cardA, cardB) -> cardA.cardWeight.compareTo(cardB.cardWeight) }
         .firstOrNull { it != 0 } ?: 0
 
     override fun compare(firstHand: Hand, secondHand: Hand): Int {
-        val compareScore = if (withJoker) {
-            firstHand.scoreWithJoker.compareTo(secondHand.scoreWithJoker)
+        val compareByHandType = if (withJoker) {
+            firstHand.typeWithJoker.compareTo(secondHand.typeWithJoker)
         } else {
-            firstHand.score.compareTo(secondHand.score)
+            firstHand.type.compareTo(secondHand.type)
         }
-        return compareScore.takeUnless { it == 0 } ?: firstHand.value.compareToHand(secondHand.value)
+        return compareByHandType.takeUnless { it == 0 } ?: firstHand.compareByCardWeight(secondHand)
     }
 }
 

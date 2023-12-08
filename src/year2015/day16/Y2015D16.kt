@@ -6,7 +6,7 @@ import utils.splitOnce
 
 fun main() = solution(2015, 16, "Aunt Sue") {
 
-    val tapeOutput = """
+    val tapeOutputInput = """
         children: 3
         cats: 7
         samoyeds: 2
@@ -19,7 +19,7 @@ fun main() = solution(2015, 16, "Aunt Sue") {
         perfumes: 1
     """.trimIndent()
 
-    val tapeOutputParsed = tapeOutput.lines().associate {
+    val tapeOutput = tapeOutputInput.lines().associate {
         val (label, count) = it.splitOnce(": ")
         label to count.toInt()
     }
@@ -33,7 +33,7 @@ fun main() = solution(2015, 16, "Aunt Sue") {
 
     partOne {
         parseInput().indexOfFirst { sueData ->
-            tapeOutputParsed.all { (compound, amount) ->
+            tapeOutput.all { (compound, amount) ->
                 val sueAmount = sueData[compound] ?: return@all true
                 sueAmount == amount
             }
@@ -42,7 +42,7 @@ fun main() = solution(2015, 16, "Aunt Sue") {
 
     partTwo {
         parseInput().indexOfFirst { sueData ->
-            tapeOutputParsed.all { (compound, amount) ->
+            tapeOutput.all { (compound, amount) ->
                 val sueAmount = sueData[compound] ?: return@all true
                 when (compound) {
                     "cats", "trees" -> sueAmount > amount

@@ -6,18 +6,11 @@ import utils.cycle
 import utils.leastCommonMultiplier
 import utils.splitOnce
 
-//import utils.SequenceExtension
-
-enum class Instruction {
-    LEFT,
-    RIGHT,
-}
-
 typealias Network = Map<String, Pair<String, String>>
 
-typealias Instructions = List<Instruction>
+enum class Instruction { LEFT, RIGHT }
 
-data class Pouch(val instructions: Instructions, val network: Network)
+data class Pouch(val instructions: List<Instruction>, val network: Network)
 
 fun main() = solution(2023, 8, "Haunted Wasteland") {
 
