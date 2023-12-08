@@ -29,11 +29,12 @@ repositories {
 }
 
 dependencies {
-//    val arrowVersion = "1.2.0"
-//    implementation("io.arrow-kt:arrow-core:$arrowVersion")
-//    implementation("io.arrow-kt:arrow-fx-coroutines:$arrowVersion")
+    val arrowVersion = "1.2.0"
+    implementation("io.arrow-kt:arrow-core:$arrowVersion")
+    implementation("io.arrow-kt:arrow-fx-coroutines:$arrowVersion")
 //    implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.apache.commons:commons-math3:3.6.1")
 //    implementation("com.github.ajalt.mordant:mordant:2.2.0")
 }
 
