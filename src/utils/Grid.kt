@@ -47,14 +47,6 @@ data class Grid<T>(val grid: List<List<T>>) {
         grid.getOrNull(cell.x + 1)?.getOrNull(cell.y + 1)
     )
 
-//        return grid.safeSublist(cell.x - 1..cell.x + 1).flatMapIndexed { index, column ->
-//            when (index) {
-////                1 -> listOfNotNull(column.getOrNull(cell.y - 1), column.getOrNull(cell.y + 1))
-//                else -> column.safeSublist(cell.y - 1..cell.y + 1)
-//            }
-//        }
-//    }
-
     fun cellSequence() = (0..<size.x).asSequence().flatMap { x ->
         (0..<size.y).asSequence().map { y ->
             grid[x][y]

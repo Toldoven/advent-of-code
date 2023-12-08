@@ -9,12 +9,10 @@ typealias Instructions = List<Pair<String, String>>
 
 fun main() = solution(2015, 19, "Medicine for Rudolph") {
 
-    fun InputProvider.parseInput(): Pair<Instructions, String> = input.splitOnce("\n\n").letFirst {
-        it.lines().map { line ->
-            val (instruction, result) = line.split(" => ")
-            instruction to result
+    fun InputProvider.parseInput(): Pair<Instructions, String> = input.splitOnce("\n\n")
+        .letFirst { instructions ->
+            instructions.lines().map { it.splitOnce(" => ") }
         }
-    }
 
     partOne {
         val (instructions, molecule) = parseInput().letFirst {
