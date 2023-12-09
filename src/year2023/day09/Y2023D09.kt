@@ -2,20 +2,17 @@ package year2023.day09
 
 import framework.InputProvider
 import framework.solution
-import utils.parseNumbersInt
+import utils.parseNumbersLong
 
 fun main() = solution(2023, 9, "Mirage Maintenance") {
 
-    fun InputProvider.parseInput() = lines.map { it.parseNumbersInt(' ') }
+    fun InputProvider.parseInput() = lines.map { it.parseNumbersLong(' ') }
 
-    fun List<List<Int>>.readingDifferencesList() = map { reading ->
-        generateSequence(reading) { currentDifference ->
-            if (currentDifference.all { it == 0 }) {
-                return@generateSequence null
-            }
-            currentDifference.zipWithNext().map { (previous, current) ->
-                current - previous
-            }
+    fun List<List<Long>>.readingDifferencesList() = map { reading ->
+        generateSequence(reading) { differences ->
+            differences.windowed(2).map { (previous, current) -> current - previous }
+        }.takeWhile { differences ->
+            differences.any { it != 0L }
         }
     }
 
@@ -29,8 +26,7 @@ fun main() = solution(2023, 9, "Mirage Maintenance") {
         parseInput().readingDifferencesList().sumOf { readingDifferenceSequence ->
             readingDifferenceSequence.map { it.first() }
                 .toList()
-                .reversed()
-                .reduce { previous, current -> current - previous }
+                .reduceRight(Long::minus)
         }
     }
 
