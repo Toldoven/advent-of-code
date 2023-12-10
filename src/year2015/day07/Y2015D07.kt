@@ -59,7 +59,7 @@ data class RShift(val first: Signal, val second: Signal) : Operation() {
     override fun connectOutput(circuit: Circuit, output: String): Boolean {
         val first = circuit.getSignal(first) ?: return false
         val second = circuit.getSignal(second) ?: return false
-        circuit[output] = first.toInt().shr(second.toInt()).toUShort()
+        circuit[output] = (first.toInt() shr second.toInt()).toUShort()
         return true
     }
 }
@@ -68,7 +68,7 @@ data class LShift(val first: Signal, val second: Signal) : Operation() {
     override fun connectOutput(circuit: Circuit, output: String): Boolean {
         val first = circuit.getSignal(first) ?: return false
         val second = circuit.getSignal(second) ?: return false
-        circuit[output] = first.toInt().shl(second.toInt()).toUShort()
+        circuit[output] = (first.toInt() shl second.toInt()).toUShort()
         return true
     }
 }

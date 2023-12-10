@@ -17,7 +17,7 @@ fun main() = solution(2015, 18, "Like a GIF For Your Yard") {
     ).count { it } == 2
 
     fun Grid<Boolean>.processCell(index: IntVec2, value: Boolean): Boolean {
-        val neighbors = getNeighbors(index).count { it }
+        val neighbors = getAdjacent8Way(index).count { it }
         return when (value) {
             true -> when (neighbors) {
                 in 2..3 -> true

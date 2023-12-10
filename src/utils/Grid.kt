@@ -36,16 +36,11 @@ data class Grid<T>(val grid: List<List<T>>) {
 
     val size: IntVec2 get() = IntVec2(grid.size, grid[0].size)
 
-    fun getNeighbors(cell: IntVec2): List<T> = listOfNotNull(
-        grid.getOrNull(cell.x - 1)?.getOrNull(cell.y - 1),
-        grid.getOrNull(cell.x)?.getOrNull(cell.y - 1),
-        grid.getOrNull(cell.x + 1)?.getOrNull(cell.y - 1),
-        grid.getOrNull(cell.x - 1)?.getOrNull(cell.y),
-        grid.getOrNull(cell.x + 1)?.getOrNull(cell.y),
-        grid.getOrNull(cell.x - 1)?.getOrNull(cell.y + 1),
-        grid.getOrNull(cell.x)?.getOrNull(cell.y + 1),
-        grid.getOrNull(cell.x + 1)?.getOrNull(cell.y + 1)
-    )
+    fun getOrNull(cell: IntVec2) = grid.getOrNull(cell.x)?.getOrNull(cell.y)
+
+    fun getAdjacent8Way(cell: IntVec2): List<T> = cell.adjacent8Way.mapNotNull { getOrNull(it) }
+
+    fun getAdjacent4Way(cell: IntVec2): List<T> = cell.adjacent4Way.mapNotNull { getOrNull(it) }
 
     fun cellSequence() = (0..<size.x).asSequence().flatMap { x ->
         (0..<size.y).asSequence().map { y ->
@@ -59,13 +54,24 @@ data class Grid<T>(val grid: List<List<T>>) {
         }
     }
 
+    val indices
+        get() = (0..<size.x).flatMap { x ->
+            (0..<size.y).map { y -> IntVec2(x, y) }
+        }
+
+//    fun seqenceWithIndex() = (0..<size.x).asSequence().map { x ->
+//        (0..<size.y).asSequence().map { y ->
+//            IntVec2(x, y) to grid[x][y]
+//        }
+//    }
+
     fun map(transform: (T) -> T) = (0..<size.x).map { x ->
         (0..<size.y).map { y ->
             transform(grid[x][y])
         }
     }.let { Grid(it) }
 
-    fun mapIndexed(transform: (IntVec2, T) -> T) = (0..<size.x).map { x ->
+    fun <R> mapIndexed(transform: (IntVec2, T) -> R) = (0..<size.x).map { x ->
         (0..<size.y).map { y ->
             transform(IntVec2(x, y), grid[x][y])
         }

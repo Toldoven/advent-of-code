@@ -56,7 +56,29 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
 inline fun <reified T : Enum<T>> String.toEnum(): T =
     enumValues<T>().first { it.name.equals(this.replace(' ', '_'), ignoreCase = true) }
 
-data class IntVec2(val x: Int, val y: Int)
+data class IntVec2(val x: Int, val y: Int) {
+
+    val adjacent4Way get() = Direction.entries.map { moveInDirection(it) }
+
+    val adjacent8Way
+        get() = adjacent4Way + listOf(
+            copy(x = x - 1, y = y - 1),
+            copy(x = x - 1, y = y + 1),
+            copy(x = x + 1, y = y - 1),
+            copy(x = x + 1, y = y + 1),
+        )
+
+    fun moveInDirection(direction: Direction, amount: Int = 1) = when (direction) {
+        Direction.UP -> copy(y = y - amount)
+        Direction.DOWN -> copy(y = y + amount)
+        Direction.LEFT -> copy(x = x - amount)
+        Direction.RIGHT -> copy(x = x + amount)
+    }
+
+    fun isPointInPolygon(polygon: List<IntVec2>) = polygon.windowed(2).count { (previous, current) ->
+        previous.y > y != current.y > y && x < (current.x - previous.x) * (y - previous.y) / (current.y - previous.y) + previous.x
+    } % 2 != 0
+}
 
 fun String.toIntVec2() =
     this.splitOnce(',').let { IntVec2(it.first.toInt(), it.second.toInt()) }
