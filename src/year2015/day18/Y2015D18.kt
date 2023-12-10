@@ -46,7 +46,7 @@ fun main() = solution(2015, 18, "Like a GIF For Your Yard") {
                 grid.processCell(index, value)
             }
         }
-        sequence.elementAt(100).cellSequence().count { it }
+        sequence.elementAt(100).asSequence().count { it }
     }
 
     partTwo {
@@ -68,7 +68,7 @@ fun main() = solution(2015, 18, "Like a GIF For Your Yard") {
                 }
             }
         }
-        sequence.elementAt(100).cellSequence().count { it }
+        sequence.elementAt(100).asSequence().count { it }
     }
 
 

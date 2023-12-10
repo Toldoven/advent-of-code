@@ -38,9 +38,7 @@ fun main() = solution(2023, 10, "Pipe Maze") {
             return currentPipe.direction.map { point.moveInDirection(it) }
         }
 
-        val start = this.cellSequenceWithIndex()
-            .first { (_, pipe) -> pipe == Pipe.START }
-            .first
+        val (start, _) = asIndexedSequence().first { (_, pipe) -> pipe == Pipe.START }
 
         val connectedToStart = findConnected(start).filter { getOrNull(it) != null }
 
