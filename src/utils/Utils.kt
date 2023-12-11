@@ -4,6 +4,7 @@ import java.math.BigInteger
 import java.security.MessageDigest
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
+import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
 
@@ -78,7 +79,16 @@ data class IntVec2(val x: Int, val y: Int) {
     fun isPointInPolygon(polygon: List<IntVec2>) = polygon.windowed(2).count { (previous, current) ->
         previous.y > y != current.y > y && x < (current.x - previous.x) * (y - previous.y) / (current.y - previous.y) + previous.x
     } % 2 != 0
+
+    fun manhattanDistanceTo(other: IntVec2) = (this.x - other.x).absoluteValue + (this.y - other.y).absoluteValue
 }
+
+data class LongVec2(val x: Long, val y: Long) {
+
+    fun manhattanDistanceTo(other: LongVec2) = (this.x - other.x).absoluteValue + (this.y - other.y).absoluteValue
+
+}
+
 
 fun String.toIntVec2() =
     this.splitOnce(',').let { IntVec2(it.first.toInt(), it.second.toInt()) }

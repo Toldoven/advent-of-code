@@ -42,6 +42,28 @@ data class Grid<T>(val grid: List<List<T>>) {
 
     fun getAdjacent4Way(cell: IntVec2): List<T> = cell.adjacent4Way.mapNotNull { getOrNull(it) }
 
+    fun columns() = (0..<size.x).asSequence().map { x ->
+        grid[x]
+    }
+
+    fun rows() = (0..<size.y).asSequence().map { y ->
+        (0..<size.x).map { x ->
+            grid[x].elementAt(y)
+        }
+    }
+
+    fun <R> flatMapColumns(transform: (List<T>) -> List<List<R>>) =
+        columns().flatMap(transform).toList().toGrid()
+
+    fun <R> flatMapRows(transform: (List<T>) -> List<List<R>>) =
+        rows().flatMap(transform).toList().convertRowToColumn().toGrid()
+
+    fun <R> flatMapColumnsIndexed(transform: (IndexedValue<List<T>>) -> List<List<R>>) =
+        columns().withIndex().flatMap(transform).toList().toGrid()
+
+    fun <R> flatMapRowsIndexed(transform: (IndexedValue<List<T>>) -> List<List<R>>) =
+        rows().withIndex().flatMap(transform).toList().convertRowToColumn().toGrid()
+
     fun asSequence() = (0..<size.x).asSequence().flatMap { x ->
         (0..<size.y).asSequence().map { y ->
             grid[x][y]

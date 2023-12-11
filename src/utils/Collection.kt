@@ -21,3 +21,18 @@ fun <T> Collection<T>.powerSet(): Sequence<List<T>> {
     val subsets = drop(1).powerSet() // Recursively get subsets for the remaining set
     return subsets + subsets.map { it + element } // Combine subsets without the current element and with the current element
 }
+
+/**
+ * Returns a list of all combinations of [ofSize] elements from the collection.
+ *
+ * @param ofSize the size of each combination
+ * @return a list of lists representing all combinations
+ */
+fun <T> Collection<T>.combinations(ofSize: Int): List<List<T>> = when {
+
+    ofSize > this.size -> emptyList()
+    ofSize == 0 -> listOf(emptyList())
+    else -> this.flatMapIndexed { index, element ->
+        this.drop(index + 1).combinations(ofSize - 1).map { listOf(element) + it }
+    }
+}

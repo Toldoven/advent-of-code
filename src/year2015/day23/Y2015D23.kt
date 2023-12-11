@@ -81,7 +81,7 @@ fun main() = solution(2015, 23, "Opening the Turing Lock") {
         }
     }
 
-    val inputRegex = """^(\w+) ((?:\+|-)?\w+)?(?:, ((?:\+|-)\w+))?$""".toRegex(RegexOption.MULTILINE)
+    val inputRegex = """^(\w+) ([+\-]?\w+)?(?:, ([+\-]\w+))?$""".toRegex(RegexOption.MULTILINE)
 
     fun InputProvider.parseInput() = inputRegex.findAll(input).map {
         val (instruction, first, second) = it.destructured
