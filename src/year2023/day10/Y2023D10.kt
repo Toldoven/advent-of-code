@@ -38,20 +38,21 @@ fun main() = solution(2023, 10, "Pipe Maze") {
             return currentPipe.direction.map { point.moveInDirection(it) }
         }
 
-        val (start, _) = asIndexedSequence().first { (_, pipe) -> pipe == Pipe.START }
-
-        val connectedToStart = findConnected(start).filter { getOrNull(it) != null }
-
-        tailrec fun tracePath(path: List<IntVec2>, target: IntVec2): List<IntVec2>? {
+        tailrec fun tracePath(path: List<IntVec2>, target: IntVec2): List<IntVec2> {
             require(path.size >= 2) { "Starting path should already have a current and a previous position" }
             val (previous, current) = path.takeLast(2)
-            val next = findConnected(current).singleOrNull { it != previous } ?: return null
+            val next = findConnected(current).singleOrNull { it != previous }
+                ?: throw IllegalStateException("Pipe at $current doesn't have a connection")
             return if (next == target) path else tracePath(path + next, target)
         }
 
-        return connectedToStart.firstNotNullOf {
-            tracePath(listOf(start, it), start)
+        val (start, _) = asIndexedSequence().first { (_, pipe) -> pipe == Pipe.START }
+
+        val next = findConnected(start).first {
+            getOrNull(it) != null && start in findConnected(it)
         }
+
+        return tracePath(listOf(start, next), start)
     }
 
     partOne {
