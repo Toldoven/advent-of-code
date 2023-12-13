@@ -92,4 +92,8 @@ data class Grid<T>(val grid: List<List<T>>) {
             transform(IntVec2(x, y), grid[x][y])
         }
     }.let { Grid(it) }
+
+    override fun toString(): String {
+        return rows().map { it.joinToString("") }.joinToString("\n", prefix = "Grid:\n")
+    }
 }

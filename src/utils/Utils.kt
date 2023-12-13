@@ -152,7 +152,7 @@ fun String.parseNumbersLong(vararg delimiters: Char, ignoreCase: Boolean = false
     split(*delimiters, ignoreCase = ignoreCase).filter { it.isNotBlank() }.map { it.trim().toLong() }
 
 fun String.parseNumbersInt(vararg delimiters: String, ignoreCase: Boolean = false) =
-    split(*delimiters, ignoreCase = ignoreCase).filter { it.isNotBlank() }.map { it.trim().toLong() }
+    split(*delimiters, ignoreCase = ignoreCase).filter { it.isNotBlank() }.map { it.trim().toInt() }
 
 fun String.parseNumbersInt(vararg delimiters: Char, ignoreCase: Boolean = false) =
     split(*delimiters, ignoreCase = ignoreCase).filter { it.isNotBlank() }.map { it.trim().toInt() }
