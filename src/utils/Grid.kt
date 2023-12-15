@@ -93,7 +93,7 @@ data class Grid<T>(val grid: List<List<T>>) {
         }
     }.let { Grid(it) }
 
-    override fun toString(): String {
-        return rows().map { it.joinToString("") }.joinToString("\n", prefix = "Grid:\n")
-    }
+//    override fun toString(): String {
+//        return rows().map { it.joinToString("") }.joinToString("\n", prefix = "Grid:\n")
+//    }
 }

@@ -27,7 +27,7 @@ fun main() = solution(2015, 24, "It Hangs in the Balance") {
         parseInput().lowestQuantumEntanglement(4)
     }
 
-    val testInput = ((1..5) + (7..11)).joinToString("\n")
+    val testInput = listOf(1..5, 7..11).flatten().joinToString("\n")
 
     partOneTest {
         testInput shouldOutput 99
