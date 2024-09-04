@@ -6,7 +6,7 @@ import utils.*
 
 fun main() = solution(2023, 11, "Cosmic Expansion") {
 
-    fun InputProvider.parseInput() = lines.map { it.toList() }.convertRowToColumn().toGrid()
+    fun InputProvider.parseInput() = lines.map { it.toList() }.swapRowsAndColumns().toGrid()
 
     fun Grid<Char>.sumOfDistances(expandBy: Long): Long {
 

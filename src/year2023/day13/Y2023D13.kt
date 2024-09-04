@@ -3,7 +3,7 @@ package year2023.day13
 import framework.InputProvider
 import framework.solution
 import utils.Grid
-import utils.convertRowToColumn
+import utils.swapRowsAndColumns
 import utils.toGrid
 
 private data class ComparisonResult(val doesMatch: Boolean, val doesMatchWithSmudge: Boolean)
@@ -11,7 +11,7 @@ private data class ComparisonResult(val doesMatch: Boolean, val doesMatchWithSmu
 fun main() = solution(2023, 13, "Point of Incidence") {
 
     fun InputProvider.parseInput() = input.split("\n\n").map {
-        it.lines().map { line -> line.toList() }.convertRowToColumn().toGrid()
+        it.lines().map { line -> line.toList() }.swapRowsAndColumns().toGrid()
     }
 
     fun comparePair(pair: Pair<List<Char>, List<Char>>): ComparisonResult {

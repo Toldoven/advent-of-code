@@ -2,7 +2,7 @@ package year2016.day03
 
 import framework.InputProvider
 import framework.solution
-import utils.convertRowToColumn
+import utils.swapRowsAndColumns
 
 
 typealias Triangle = List<Int>
@@ -27,7 +27,7 @@ fun main() = solution(2016, 3, "Squares With Three Sides") {
     
     partTwo {
         parseInput().chunked(3)
-            .flatMap { chunk -> chunk.convertRowToColumn() }
+            .flatMap { chunk -> chunk.swapRowsAndColumns() }
             .countValidTriangles()
     }
 }

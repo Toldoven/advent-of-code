@@ -4,7 +4,7 @@ import framework.InputProvider
 import framework.solution
 import utils.Grid
 import utils.IntVec2
-import utils.convertRowToColumn
+import utils.swapRowsAndColumns
 import utils.toGrid
 
 fun main() = solution(2015, 18, "Like a GIF For Your Yard") {
@@ -38,7 +38,7 @@ fun main() = solution(2015, 18, "Like a GIF For Your Yard") {
                 else -> false
             }
         }
-    }.convertRowToColumn().toGrid()
+    }.swapRowsAndColumns().toGrid()
 
     partOne {
         val sequence = generateSequence(parseInput()) { grid ->

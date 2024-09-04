@@ -2,7 +2,7 @@ package utils
 
 fun <T> List<List<T>>.toGrid() = Grid(this)
 
-fun <T> List<List<T>>.convertRowToColumn(): List<List<T>> {
+fun <T> List<List<T>>.swapRowsAndColumns(): List<List<T>> {
     if (this.isEmpty()) return emptyList()
 
     val numRows = this.size
@@ -15,18 +15,18 @@ fun <T> List<List<T>>.convertRowToColumn(): List<List<T>> {
     }
 }
 
-fun <T> convertColumnToRow(matrix: List<List<T>>): List<List<T>> {
-    if (matrix.isEmpty()) return emptyList()
-
-    val numRows = matrix[0].size
-    val numCols = matrix.size
-
-    return List(numRows) { row ->
-        List(numCols) { col ->
-            matrix[col][row]
-        }
-    }
-}
+//fun <T> convertColumnToRow(matrix: List<List<T>>): List<List<T>> {
+//    if (matrix.isEmpty()) return emptyList()
+//
+//    val numRows = matrix[0].size
+//    val numCols = matrix.size
+//
+//    return List(numRows) { row ->
+//        List(numCols) { col ->
+//            matrix[col][row]
+//        }
+//    }
+//}
 
 data class Grid<T>(val grid: List<List<T>>) {
 
@@ -58,13 +58,13 @@ data class Grid<T>(val grid: List<List<T>>) {
         columns().flatMap(transform).toList().toGrid()
 
     fun <R> flatMapRows(transform: (List<T>) -> List<List<R>>) =
-        rows().flatMap(transform).toList().convertRowToColumn().toGrid()
+        rows().flatMap(transform).toList().swapRowsAndColumns().toGrid()
 
     fun <R> flatMapColumnsIndexed(transform: (IndexedValue<List<T>>) -> List<List<R>>) =
         columns().withIndex().flatMap(transform).toList().toGrid()
 
     fun <R> flatMapRowsIndexed(transform: (IndexedValue<List<T>>) -> List<List<R>>) =
-        rows().withIndex().flatMap(transform).toList().convertRowToColumn().toGrid()
+        rows().withIndex().flatMap(transform).toList().swapRowsAndColumns().toGrid()
 
     fun asSequence() = (0..<size.x).asSequence().flatMap { x ->
         (0..<size.y).asSequence().map { y ->

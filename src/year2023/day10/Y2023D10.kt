@@ -28,7 +28,7 @@ fun main() = solution(2023, 10, "Pipe Maze") {
         .map { line ->
             line.map { Pipe.fromCharOrNull(it) }
         }
-        .convertRowToColumn()
+        .swapRowsAndColumns()
         .toGrid()
 
     fun Grid<Pipe?>.tracePath(): List<IntVec2> {

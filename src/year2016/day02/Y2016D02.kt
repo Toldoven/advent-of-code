@@ -5,7 +5,7 @@ import framework.solution
 import utils.Direction
 import utils.Grid
 import utils.IntVec2
-import utils.convertRowToColumn
+import utils.swapRowsAndColumns
 
 typealias Keypad = Grid<Char?>
 
@@ -26,7 +26,7 @@ fun main() = solution(2016, 2, "Bathroom Security") {
         .filterIndexed { index, _ -> index % 2 == 0 }
         .map { it.takeIf { it != ' ' } }
     }
-        .convertRowToColumn()
+        .swapRowsAndColumns()
         .let { Grid(it) }
 
 
