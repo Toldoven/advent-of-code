@@ -36,6 +36,8 @@ data class Grid<T>(val grid: List<List<T>>) {
 
     val size: IntVec2 get() = IntVec2(grid.size, grid[0].size)
 
+    fun get(cell: IntVec2) = getOrNull(cell) ?: throw IndexOutOfBoundsException()
+
     fun getOrNull(cell: IntVec2) = grid.getOrNull(cell.x)?.getOrNull(cell.y)
 
     fun getAdjacent8Way(cell: IntVec2): List<T> = cell.adjacent8Way.mapNotNull { getOrNull(it) }
