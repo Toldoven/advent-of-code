@@ -57,6 +57,7 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
 inline fun <reified T : Enum<T>> String.toEnum(): T =
     enumValues<T>().first { it.name.equals(this.replace(' ', '_'), ignoreCase = true) }
 
+
 data class IntVec2(val x: Int, val y: Int) {
 
     val adjacent4Way get() = Direction.entries.map { moveInDirection(it) }
@@ -81,6 +82,10 @@ data class IntVec2(val x: Int, val y: Int) {
     } % 2 != 0
 
     fun manhattanDistanceTo(other: IntVec2) = (this.x - other.x).absoluteValue + (this.y - other.y).absoluteValue
+
+    companion object {
+        val ZERO = IntVec2(0, 0)
+    }
 }
 
 data class LongVec2(val x: Long, val y: Long) {
