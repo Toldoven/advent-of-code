@@ -104,6 +104,5 @@ class Solution(private val day: Day) {
         executePart(1, input, partOne, partOneTest)
         println(prettyLine('─', "Part Two"))
         executePart(2, input, partTwo, partTwoTest)
-//        println(prettyLine('─'))
     }
 }

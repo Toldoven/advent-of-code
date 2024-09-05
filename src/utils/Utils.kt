@@ -105,9 +105,13 @@ class SquareGrid<T>(size: Int = 1000, init: (Int) -> T) {
 
 fun <K, V> Iterable<Map<K, V>>.flatten() = map { it.toList() }.flatten()
 
-inline fun <A, B, R> Pair<A, B>.letFirst(transform: (A) -> R) = let { transform(it.first) to it.second }
+inline fun <A, B, R> Pair<A, B>.letFirst(transform: (A) -> R) = transform(first) to second
 
-inline fun <A, B, R> Pair<A, B>.letSecond(transform: (B) -> R) = let { it.first to transform(it.second) }
+inline fun <A, B, R> Pair<A, B>.letSecond(transform: (B) -> R) = first to transform(second)
+
+inline fun <T, R> Pair<T, T>.map(transform: (T) -> R) = transform(first) to transform(second)
+
+fun <A, B> Pair<A, B>.swap() = second to first
 
 inline fun <K, V> MutableMap<K, V>.defaultAndModify(key: K, default: V, modify: (V) -> V) {
     this[key] = getOrDefault(key, default).let(modify)
