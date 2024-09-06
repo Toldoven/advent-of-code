@@ -3,8 +3,9 @@ import java.time.Month
 import java.time.ZoneId
 
 plugins {
-    kotlin("jvm") version "1.9.20"
-    kotlin("plugin.serialization") version "1.9.20"
+    kotlin("jvm") version "1.9.24"
+    kotlin("plugin.serialization") version "1.9.24"
+    id("com.google.devtools.ksp") version "1.9.24-1.0.20"
     idea
 }
 
@@ -29,9 +30,12 @@ repositories {
 }
 
 dependencies {
-    val arrowVersion = "1.2.0"
+    val arrowVersion = "1.2.4"
     implementation("io.arrow-kt:arrow-core:$arrowVersion")
     implementation("io.arrow-kt:arrow-fx-coroutines:$arrowVersion")
+    implementation("io.arrow-kt:arrow-optics:$arrowVersion")
+    ksp("io.arrow-kt:arrow-optics-ksp-plugin:$arrowVersion")
+
 //    implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("org.apache.commons:commons-math3:3.6.1")
