@@ -25,7 +25,7 @@ class Maze(private val seed: Int) {
         .map { Path(it, visited + it) }
 
 
-    private fun bfsSequence() = generateSequence(listOf(Path(IntVec2(1, 1)))) { pathList ->
+    private fun bfsSequence() = generateSequence(sequenceOf(Path(IntVec2(1, 1)))) { pathList ->
         pathList.flatMap { it.visitAll() }
     }
 
@@ -55,18 +55,17 @@ class Maze(private val seed: Int) {
 
 fun main() = solution(2016, 13, "A Maze of Twisty Little Cubicles") {
 
-    fun InputProvider.parseSeed() = input.toInt()
+    fun InputProvider.seed() = input.toInt()
 
     partOne {
-        Maze(parseSeed()).findShortestPath(
+        Maze(seed()).findShortestPath(
             IntVec2(31, 39),
         )
     }
 
     partOneTest {
         "10" with {
-            val maze = Maze(parseSeed())
-            maze.asString()
+            Maze(seed()).asString()
         } shouldOutput """
             .#.####.##
             ..#..#...#
@@ -78,13 +77,13 @@ fun main() = solution(2016, 13, "A Maze of Twisty Little Cubicles") {
         """.trimIndent()
 
         "10" with {
-            Maze(parseSeed()).findShortestPath(
+            Maze(seed()).findShortestPath(
                 IntVec2(7, 4),
             )
         } shouldOutput 11
     }
     
     partTwo {
-        Maze(parseSeed()).distinctCoordinates(50)
+        Maze(seed()).distinctCoordinates(50)
     }
 }
