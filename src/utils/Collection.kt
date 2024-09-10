@@ -29,10 +29,20 @@ fun <T> Collection<T>.powerSet(): Sequence<List<T>> {
  * @return a list of lists representing all combinations
  */
 fun <T> Collection<T>.combinations(ofSize: Int): List<List<T>> = when {
-
     ofSize > this.size -> emptyList()
     ofSize == 0 -> listOf(emptyList())
     else -> this.flatMapIndexed { index, element ->
         this.drop(index + 1).combinations(ofSize - 1).map { listOf(element) + it }
+    }
+}
+
+// Convert List of Sequences into a Sequence of Lists
+fun <T> Collection<Sequence<T>>.zipAll(): Sequence<List<T>> = sequence {
+    // Create iterators for each sequence
+    val iterators = this@zipAll.map { it.iterator() }
+
+    // Continue yielding lists as long as all iterators can provide a next value
+    while (iterators.all { it.hasNext() }) {
+        yield(iterators.map { it.next() })
     }
 }
