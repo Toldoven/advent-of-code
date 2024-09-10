@@ -99,10 +99,6 @@ fun String.toIntVec2() =
     this.splitOnce(',').let { IntVec2(it.first.toInt(), it.second.toInt()) }
 
 
-class SquareGrid<T>(size: Int = 1000, init: (Int) -> T) {
-    val grid = List(1000) { MutableList(1000, init) }
-}
-
 fun <K, V> Iterable<Map<K, V>>.flatten() = map { it.toList() }.flatten()
 
 inline fun <A, B, R> Pair<A, B>.letFirst(transform: (A) -> R) = transform(first) to second
@@ -117,7 +113,7 @@ inline fun <K, V> MutableMap<K, V>.defaultAndModify(key: K, default: V, modify: 
     this[key] = getOrDefault(key, default).let(modify)
 }
 
-fun String.isInt() = trim().all { it.isDigit() } && isNotEmpty()
+fun String.isInt() = toIntOrNull() != null
 
 fun <T> List<T>.safeSlice(indices: IntRange) = slice(
     max(indices.first, 0)..min(indices.last, size - 1),
@@ -165,3 +161,8 @@ fun String.parseNumbersInt(vararg delimiters: String, ignoreCase: Boolean = fals
 
 fun String.parseNumbersInt(vararg delimiters: Char, ignoreCase: Boolean = false) =
     split(*delimiters, ignoreCase = ignoreCase).filter { it.isNotBlank() }.map { it.trim().toInt() }
+
+
+fun <T> List<T>.replaceAt(index: Int, newValue: T): List<T> {
+    return mapIndexed { i, item -> if (i == index) newValue else item }
+}
