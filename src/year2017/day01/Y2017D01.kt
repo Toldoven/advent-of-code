@@ -3,6 +3,7 @@ package year2017.day01
 import framework.solution
 
 fun main() = solution(2017, 1, "Inverse Captcha") {
+
     partOne {
         input
             .asSequence()

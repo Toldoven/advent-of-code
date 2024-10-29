@@ -22,9 +22,13 @@ fun CharSequence.splitOnce(vararg delimiters: String, ignoreCase: Boolean = fals
 fun CharSequence.splitOnce(vararg delimiters: Char, ignoreCase: Boolean = false) =
     splitOnceOrNull(*delimiters, ignoreCase = ignoreCase) ?: throw IllegalArgumentException()
 
-
 fun CharSequence.splitFromEnd(vararg delimiters: Char, ignoreCase: Boolean = false, limit: Int = 0) =
     reversed().split(*delimiters, ignoreCase = ignoreCase, limit = limit).map { it.reversed() }.reversed()
+
+
+private val whitespaceRegex = Regex("\\s+")
+
+fun CharSequence.splitWhitespace() = split(whitespaceRegex)
 
 fun Iterable<Int>.product() = reduce { acc, cur -> acc * cur }
 
