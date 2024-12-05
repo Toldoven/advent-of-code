@@ -19,3 +19,10 @@ fun CharSequence.repeat(times: Int) = asSequence().repeat(times)
 operator fun <T> Collection<T>.times(times: Int) = repeat(times).toList()
 
 operator fun CharSequence.times(times: Int) = repeat(times).joinToString("")
+
+fun <T : Any> Sequence<T?>.takeWhileNotNull(): Sequence<T> = sequence {
+    for (item in this@takeWhileNotNull) {
+        if (item == null) break
+        yield(item)
+    }
+}

@@ -149,10 +149,7 @@ fun require(condition: Boolean, exception: Throwable) {
 }
 
 
-fun <T> T.dbg(): T {
-    println(this)
-    return this
-}
+fun <T> T.dbg(): T = also { println(it) }
 
 fun String.parseNumbersLong(vararg delimiters: String, ignoreCase: Boolean = false) =
     split(*delimiters, ignoreCase = ignoreCase).filter { it.isNotBlank() }.map { it.trim().toLong() }
@@ -170,3 +167,4 @@ fun String.parseNumbersInt(vararg delimiters: Char, ignoreCase: Boolean = false)
 fun <T> List<T>.replaceAt(index: Int, newValue: T): List<T> {
     return mapIndexed { i, item -> if (i == index) newValue else item }
 }
+fun String.countOccurrences(of: String) = windowed(of.length).count { it == of }
