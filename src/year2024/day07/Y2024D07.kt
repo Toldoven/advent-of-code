@@ -58,7 +58,6 @@ fun main() = solution(2024, 7, "Bridge Repair") {
         solve(Operation.entries)
     }
 
-
     val testInput = """
         190: 10 19
         3267: 81 40 27

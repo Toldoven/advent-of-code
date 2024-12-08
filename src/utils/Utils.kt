@@ -90,6 +90,14 @@ data class IntVec2(val x: Int, val y: Int) {
     companion object {
         val ZERO = IntVec2(0, 0)
     }
+
+    operator fun plus(other: IntVec2) = IntVec2(x + other.x, y + other.y)
+
+    operator fun minus(other: IntVec2) = IntVec2(x - other.x, y - other.y)
+
+    operator fun times(other: IntVec2) = IntVec2(x * other.x, y * other.y)
+
+    operator fun div(other: IntVec2) = IntVec2(x / other.x, y / other.y)
 }
 
 data class LongVec2(val x: Long, val y: Long) {
